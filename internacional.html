@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Internacional – Evidencia</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#f5f4f0;--card:#fff;--border:#e0ddd5;--text:#1a1a18;--muted:#6b6860;--hint:#a09e9a;--accent:#993C1D;--accent-bg:#FAECE7;--green:#27500A;--green-bg:#EAF3DE;--amber:#633806;--amber-bg:#FAEEDA;--r:12px;--rs:8px}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:3rem}
+  .header{background:#993C1D;color:#fff;padding:1.25rem 1rem 1rem;text-align:center;position:sticky;top:0;z-index:10}
+  .header h1{font-size:18px;font-weight:700;letter-spacing:.01em}
+  .header p{font-size:12px;opacity:.75;margin-top:3px}
+  .wrap{max-width:480px;margin:0 auto;padding:1rem}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;margin-bottom:.875rem}
+  .card-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.875rem}
+
+  /* TABS DE BARRA */
+  .barra-tabs{display:grid;grid-template-columns:1fr 1fr;gap:0;margin-bottom:1.25rem;border:1.5px solid var(--border);border-radius:var(--r);overflow:hidden}
+  .barra-tab{padding:12px 8px;text-align:center;cursor:pointer;font-size:14px;font-weight:600;color:var(--muted);background:var(--bg);border:none;font-family:inherit;transition:all .15s}
+  .barra-tab.active{background:#993C1D;color:#fff}
+  .barra-tab:first-child{border-right:1px solid var(--border)}
+
+  label{font-size:14px;color:var(--muted);display:block;margin-bottom:5px;margin-top:.875rem}
+  label:first-of-type{margin-top:0}
+  input[type=text],input[type=number],textarea{width:100%;font-size:15px;padding:11px 13px;border:1.5px solid var(--border);border-radius:var(--rs);background:var(--bg);color:var(--text);-webkit-appearance:none;font-family:inherit}
+  input[type=number]{-moz-appearance:textfield}
+  input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none}
+  input:focus,textarea:focus{outline:none;border-color:var(--accent)}
+  textarea{resize:vertical;min-height:80px;line-height:1.5}
+  .turno-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:.5rem}
+  .turno-btn{padding:12px 6px 10px;border:1.5px solid var(--border);border-radius:var(--rs);background:var(--card);color:var(--muted);cursor:pointer;text-align:center;font-size:12px;font-family:inherit;line-height:1.4;transition:all .15s}
+  .turno-btn .icon{font-size:22px;display:block;margin-bottom:5px}
+  .turno-btn .name{font-weight:700;display:block;font-size:13px}
+  .turno-btn .time{font-size:11px;opacity:.6;display:block;margin-top:2px}
+  .turno-btn.active{border-color:var(--accent);background:var(--accent-bg);color:var(--accent)}
+  .timestamp{font-size:12px;color:var(--hint);margin-top:4px;min-height:16px}
+  .sec-label{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px}
+  .badge{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:600}
+  .b-red{background:var(--accent-bg);color:var(--accent)}
+  .b-amber{background:var(--amber-bg);color:var(--amber)}
+  .b-green{background:var(--green-bg);color:var(--green)}
+  .hint{font-size:12px;color:var(--hint);margin-bottom:10px;line-height:1.5}
+  .upload-zone{border:2px dashed var(--border);border-radius:var(--rs);padding:1.25rem;text-align:center;cursor:pointer;background:var(--bg);transition:border-color .15s;margin-bottom:.75rem}
+  .upload-zone:hover{border-color:var(--accent)}
+  .upload-zone .uzi{font-size:26px;display:block;margin-bottom:4px;color:var(--hint)}
+  .upload-zone span{font-size:13px;color:var(--muted)}
+  .upload-zone input{display:none}
+  .prev-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:.875rem}
+  .prev-item{position:relative;aspect-ratio:1;border-radius:8px;overflow:hidden;background:var(--border)}
+  .prev-item img{width:100%;height:100%;object-fit:cover;display:block}
+  .prev-item .del{position:absolute;top:5px;right:5px;background:rgba(0,0,0,.6);border:none;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:16px;padding:0}
+  .sep{height:1px;background:var(--border);margin:1.25rem 0}
+  .prop-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--rs);padding:1rem;margin-top:.875rem}
+  .prop-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.75rem}
+  .prop-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:.5rem}
+  .prop-field label{font-size:12px;color:var(--hint);margin-bottom:4px;margin-top:0}
+  .prop-field input{font-size:14px;padding:9px 11px}
+  .prop-total{display:flex;justify-content:space-between;align-items:center;padding-top:.625rem;border-top:1px solid var(--border);margin-top:.25rem}
+  .prop-total-lbl{font-size:13px;color:var(--muted);font-weight:600}
+  .prop-total-val{font-size:18px;font-weight:700;color:var(--text)}
+  .submit-btn{width:100%;padding:15px;background:#1a1a18;color:#fff;border:none;border-radius:var(--r);font-size:16px;font-weight:700;cursor:pointer;font-family:inherit;transition:opacity .15s}
+  .submit-btn:hover{opacity:.85}
+  .submit-btn:disabled{background:var(--border);color:var(--hint);cursor:not-allowed;opacity:1}
+  .success{display:none;text-align:center;padding:2.5rem 1.5rem;background:var(--card);border:1px solid var(--border);border-radius:var(--r)}
+  .success .check{font-size:52px;margin-bottom:1rem}
+  .success h2{font-size:20px;font-weight:700;margin-bottom:.5rem}
+  .success p{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:1.5rem}
+  .reset-btn{padding:12px 28px;border:1.5px solid var(--border);border-radius:var(--rs);background:transparent;color:var(--text);cursor:pointer;font-size:14px;font-family:inherit;font-weight:600}
+  .hidden{display:none!important}
+  .barra-section{display:none}
+  .barra-section.active{display:block}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🌍 Internacional</h1>
+  <p>Registro de evidencia · Salón y Mezzanine</p>
+</div>
+<div class="wrap">
+
+  <div class="card" id="card-sup">
+    <div class="card-title">Supervisor</div>
+    <label>Nombre completo</label>
+    <input type="text" id="supervisor" placeholder="Escribe tu nombre">
+  </div>
+
+  <!-- SELECTOR DE BARRA -->
+  <div class="card" id="card-barra">
+    <div class="card-title">Área de buffet</div>
+    <div class="barra-tabs">
+      <button class="barra-tab active" onclick="selectBarra('salon',this)">🏠 Salón</button>
+      <button class="barra-tab" onclick="selectBarra('mezanine',this)">🏢 Mezzanine</button>
+    </div>
+    <p style="font-size:12px;color:var(--hint)">Completa la evidencia de cada área por separado.</p>
+  </div>
+
+  <div class="card" id="card-turno">
+    <div class="card-title">Turno</div>
+    <div class="turno-grid">
+      <button class="turno-btn" data-t="desayuno" onclick="selectTurno(this)">
+        <span class="icon">☕</span><span class="name">Desayuno</span><span class="time">6–11:59 am</span>
+      </button>
+      <button class="turno-btn" data-t="cambio" onclick="selectTurno(this)">
+        <span class="icon">🔄</span><span class="name">Cambio</span><span class="time">12:00 pm</span>
+      </button>
+      <button class="turno-btn" data-t="cierre" onclick="selectTurno(this)">
+        <span class="icon">🌙</span><span class="name">Cierre</span><span class="time">Fin servicio</span>
+      </button>
+    </div>
+    <div class="timestamp" id="timestamp"></div>
+  </div>
+
+  <!-- ===== SALON ===== -->
+  <div id="sec-salon" class="barra-section active">
+
+    <div class="card hidden" id="salon-bloque-desayuno">
+      <div class="card-title">Salón · Desayuno</div>
+      <div class="sec-label">📷 Montaje <span class="badge b-red">Salón</span></div>
+      <p class="hint">Chaferes · planchas calientes · planchas frías · refrigeradores</p>
+      <div class="upload-zone" onclick="triggerUpload('f-sal-des')">
+        <span class="uzi">📸</span><span>Toca para tomar o subir fotos</span>
+        <input type="file" id="f-sal-des" multiple accept="image/*" capture="environment" onchange="handleFiles(this,'p-sal-des')">
+      </div>
+      <div class="prev-grid" id="p-sal-des"></div>
+      <label>Comentarios del montaje</label>
+      <textarea id="c-sal-des" placeholder="Temperatura, faltantes, observaciones…"></textarea>
+      <div class="prop-box">
+        <div class="prop-title">💰 Propina del turno</div>
+        <div class="prop-row">
+          <div class="prop-field"><label>Punta del Cielo</label><input type="number" id="pp-sal-des-a" placeholder="0.00" min="0" step="0.01" oninput="calcProp('sal-des')"></div>
+          <div class="prop-field"><label>Cocina Elemental</label><input type="number" id="pp-sal-des-b" placeholder="0.00" min="0" step="0.01" oninput="calcProp('sal-des')"></div>
+        </div>
+        <div class="prop-total"><span class="prop-total-lbl">Total propina</span><span class="prop-total-val" id="pt-sal-des">$0.00</span></div>
+      </div>
+    </div>
+
+    <div class="card hidden" id="salon-bloque-cambio">
+      <div class="card-title">Salón · Cambio de franja</div>
+      <div class="sec-label">📷 Nuevo montaje <span class="badge b-amber">12 pm</span></div>
+      <p class="hint">Fotografía el montaje de comida listo para el servicio</p>
+      <div class="upload-zone" onclick="triggerUpload('f-sal-cam')">
+        <span class="uzi">📸</span><span>Fotos del nuevo montaje</span>
+        <input type="file" id="f-sal-cam" multiple accept="image/*" capture="environment" onchange="handleFiles(this,'p-sal-cam')">
+      </div>
+      <div class="prev-grid" id="p-sal-cam"></div>
+      <label>Comentarios del montaje</label>
+      <textarea id="c-sal-cam" placeholder="Observaciones del cambio de franja…"></textarea>
+      <div class="sep"></div>
+      <div class="sec-label">🗑️ Merma del desayuno <span class="badge b-amber">12 pm</span></div>
+      <div class="upload-zone" onclick="triggerUpload('f-sal-mca')">
+        <span class="uzi">📸</span><span>Fotos de sobrantes del desayuno</span>
+        <input type="file" id="f-sal-mca" multiple accept="image/*" capture="environment" onchange="handleFiles(this,'p-sal-mca')">
+      </div>
+      <div class="prev-grid" id="p-sal-mca"></div>
+      <label>Estimado de merma</label>
+      <input type="text" id="merma-sal-cam" placeholder="Ej: 2 kg fruta, 1 charola huevo…">
+      <div class="prop-box">
+        <div class="prop-title">💰 Propina del turno</div>
+        <div class="prop-row">
+          <div class="prop-field"><label>Punta del Cielo</label><input type="number" id="pp-sal-cam-a" placeholder="0.00" min="0" step="0.01" oninput="calcProp('sal-cam')"></div>
+          <div class="prop-field"><label>Cocina Elemental</label><input type="number" id="pp-sal-cam-b" placeholder="0.00" min="0" step="0.01" oninput="calcProp('sal-cam')"></div>
+        </div>
+        <div class="prop-total"><span class="prop-total-lbl">Total propina</span><span class="prop-total-val" id="pt-sal-cam">$0.00</span></div>
+      </div>
+    </div>
+
+    <div class="card hidden" id="salon-bloque-cierre">
+      <div class="card-title">Salón · Cierre</div>
+      <div class="sec-label">📷 Alimentos sobrantes <span class="badge b-green">Cierre</span></div>
+      <div class="upload-zone" onclick="triggerUpload('f-sal-cie')">
+        <span class="uzi">📸</span><span>Fotos de merma al cierre</span>
+        <input type="file" id="f-sal-cie" multiple accept="image/*" capture="environment" onchange="handleFiles(this,'p-sal-cie')">
+      </div>
+      <div class="prev-grid" id="p-sal-cie"></div>
+      <label>Estimado de merma total</label>
+      <input type="text" id="merma-sal-cie" placeholder="Ej: 3 kg pollo, 1 charola ensalada…">
+      <label>Condición y destino</label>
+      <textarea id="c-sal-cie" placeholder="Apto para reutilizar / descarte / refrigerar…"></textarea>
+      <div class="prop-box">
+        <div class="prop-title">💰 Propina del turno</div>
+        <div class="prop-row">
+          <div class="prop-field"><label>Punta del Cielo</label><input type="number" id="pp-sal-cie-a" placeholder="0.00" min="0" step="0.01" oninput="calcProp('sal-cie')"></div>
+          <div class="prop-field"><label>Cocina Elemental</label><input type="number" id="pp-sal-cie-b" placeholder="0.00" min="0" step="0.01" oninput="calcProp('sal-cie')"></div>
+        </div>
+        <div class="prop-total"><span class="prop-total-lbl">Total propina</span><span class="prop-total-val" id="pt-sal-cie">$0.00</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MEZZANINE ===== -->
+  <div id="sec-mezanine" class="barra-section">
+
+    <div class="card hidden" id="mezanine-bloque-desayuno">
+      <div class="card-title">Mezzanine · Desayuno</div>
+      <div class="sec-label">📷 Montaje <span class="badge b-red">Mezzanine</span></div>
+      <p class="hint">Chaferes · planchas calientes · planchas frías · refrigeradores</p>
+      <div class="upload-zone" onclick="triggerUpload('f-mez-des')">
+        <span class="uzi">📸</span><span>Toca para tomar o subir fotos</span>
+        <input type="file" id="f-mez-des" multiple accept="image/*" capture="environment" onchange="handleFiles(this,'p-mez-des')">
+      </div>
+      <div class="prev-grid" id="p-mez-des"></div>
+      <label>Comentarios del montaje</label>
+      <textarea id="c-mez-des" placeholder="Temperatura, faltantes, observaciones…"></textarea>
+      <div class="prop-box">
+        <div class="prop-title">💰 Propina del turno</div>
+        <div class="prop-row">
+          <div class="prop-field"><label>Punta del Cielo</label><input type="number" id="pp-mez-des-a" placeholder="0.00" min="0" step="0.01" oninput="calcProp('mez-des')"></div>
+          <div class="prop-field"><label>Cocina Elemental</label><input type="number" id="pp-mez-des-b" placeholder="0.00" min="0" step="0.01" oninput="calcProp('mez-des')"></div>
+        </div>
+        <div class="prop-total"><span class="prop-total-lbl">Total propina</span><span class="prop-total-val" id="pt-mez-des">$0.00</span></div>
+      </div>
+    </div>
+
+    <div class="card hidden" id="mezanine-bloque-cambio">
+      <div class="card-title">Mezzanine · Cambio de franja</div>
+      <div class="sec-label">📷 Nuevo montaje <span class="badge b-amber">12 pm</span></div>
+      <div class="upload-zone" onclick="triggerUpload('f-mez-cam')">
+        <span class="uzi">📸</span><span>Fotos del nuevo montaje</span>
+        <input type="file" id="f-mez-cam" multiple accept="image/*" capture="environment" onchange="handleFiles(this,'p-mez-cam')">
+      </div>
+      <div class="prev-grid" id="p-mez-cam"></div>
+      <label>Comentarios del montaje</label>
+      <textarea id="c-mez-cam" placeholder="Observaciones del cambio de franja…"></textarea>
+      <div class="sep"></div>
+      <div class="sec-label">🗑️ Merma del desayuno <span class="badge b-amber">12 pm</span></div>
+      <div class="upload-zone" onclick="triggerUpload('f-mez-mca')">
+        <span class="uzi">📸</span><span>Fotos de sobrantes del desayuno</span>
+        <input type="file" id="f-mez-mca" multiple accept="image/*" capture="environment" onchange="handleFiles(this,'p-mez-mca')">
+      </div>
+      <div class="prev-grid" id="p-mez-mca"></div>
+      <label>Estimado de merma</label>
+      <input type="text" id="merma-mez-cam" placeholder="Ej: 2 kg fruta, 1 charola huevo…">
+      <div class="prop-box">
+        <div class="prop-title">💰 Propina del turno</div>
+        <div class="prop-row">
+          <div class="prop-field"><label>Punta del Cielo</label><input type="number" id="pp-mez-cam-a" placeholder="0.00" min="0" step="0.01" oninput="calcProp('mez-cam')"></div>
+          <div class="prop-field"><label>Cocina Elemental</label><input type="number" id="pp-mez-cam-b" placeholder="0.00" min="0" step="0.01" oninput="calcProp('mez-cam')"></div>
+        </div>
+        <div class="prop-total"><span class="prop-total-lbl">Total propina</span><span class="prop-total-val" id="pt-mez-cam">$0.00</span></div>
+      </div>
+    </div>
+
+    <div class="card hidden" id="mezanine-bloque-cierre">
+      <div class="card-title">Mezzanine · Cierre</div>
+      <div class="sec-label">📷 Alimentos sobrantes <span class="badge b-green">Cierre</span></div>
+      <div class="upload-zone" onclick="triggerUpload('f-mez-cie')">
+        <span class="uzi">📸</span><span>Fotos de merma al cierre</span>
+        <input type="file" id="f-mez-cie" multiple accept="image/*" capture="environment" onchange="handleFiles(this,'p-mez-cie')">
+      </div>
+      <div class="prev-grid" id="p-mez-cie"></div>
+      <label>Estimado de merma total</label>
+      <input type="text" id="merma-mez-cie" placeholder="Ej: 3 kg pollo, 1 charola ensalada…">
+      <label>Condición y destino</label>
+      <textarea id="c-mez-cie" placeholder="Apto para reutilizar / descarte / refrigerar…"></textarea>
+      <div class="prop-box">
+        <div class="prop-title">💰 Propina del turno</div>
+        <div class="prop-row">
+          <div class="prop-field"><label>Punta del Cielo</label><input type="number" id="pp-mez-cie-a" placeholder="0.00" min="0" step="0.01" oninput="calcProp('mez-cie')"></div>
+          <div class="prop-field"><label>Cocina Elemental</label><input type="number" id="pp-mez-cie-b" placeholder="0.00" min="0" step="0.01" oninput="calcProp('mez-cie')"></div>
+        </div>
+        <div class="prop-total"><span class="prop-total-lbl">Total propina</span><span class="prop-total-val" id="pt-mez-cie">$0.00</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="wrap-btn" class="hidden">
+    <button class="submit-btn" id="btn-enviar" onclick="enviar()">Registrar evidencia ✓</button>
+  </div>
+
+  <div class="success" id="success">
+    <div class="check">✅</div>
+    <h2>¡Evidencia registrada!</h2>
+    <p id="success-detalle"></p>
+    <button class="reset-btn" onclick="location.reload()">Registrar otro turno</button>
+  </div>
+</div>
+
+<script>
+let turnoActual=null;
+let barraActual='salon';
+
+function selectBarra(barra, el){
+  barraActual=barra;
+  document.querySelectorAll('.barra-tab').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.barra-section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+barra).classList.add('active');
+  if(turnoActual) mostrarBloque();
+}
+
+function selectTurno(el){
+  document.querySelectorAll('.turno-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  turnoActual=el.dataset.t;
+  const now=new Date();
+  document.getElementById('timestamp').textContent='Hora registrada: '+now.toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long'})+', '+now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+  mostrarBloque();
+  document.getElementById('wrap-btn').classList.remove('hidden');
+}
+
+function mostrarBloque(){
+  ['salon','mezanine'].forEach(b=>{
+    ['desayuno','cambio','cierre'].forEach(t=>{
+      const el=document.getElementById(b+'-bloque-'+t);
+      if(el) el.classList.toggle('hidden', !(b===barraActual && t===turnoActual));
+    });
+  });
+  setTimeout(()=>{
+    const el=document.getElementById(barraActual+'-bloque-'+turnoActual);
+    if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+  },100);
+}
+
+function calcProp(t){
+  const a=parseFloat(document.getElementById('pp-'+t+'-a').value)||0;
+  const b=parseFloat(document.getElementById('pp-'+t+'-b').value)||0;
+  document.getElementById('pt-'+t).textContent='$'+(a+b).toLocaleString('es-MX',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+function triggerUpload(id){document.getElementById(id).click()}
+function handleFiles(input,previewId){
+  const grid=document.getElementById(previewId);
+  Array.from(input.files).forEach(file=>{
+    const reader=new FileReader();
+    reader.onload=e=>{
+      const wrap=document.createElement('div');wrap.className='prev-item';
+      const img=document.createElement('img');img.src=e.target.result;
+      const del=document.createElement('button');del.className='del';del.innerHTML='×';del.onclick=()=>wrap.remove();
+      wrap.appendChild(img);wrap.appendChild(del);grid.appendChild(wrap);
+    };reader.readAsDataURL(file);
+  });
+}
+function enviar(){
+  const sup=document.getElementById('supervisor').value.trim();
+  if(!sup){alert('Escribe tu nombre.');return}
+  if(!turnoActual){alert('Selecciona el turno.');return}
+  const btn=document.getElementById('btn-enviar');btn.disabled=true;btn.textContent='Registrando…';
+  setTimeout(()=>{
+    ['card-sup','card-barra','card-turno','wrap-btn'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+    document.querySelectorAll('.barra-section').forEach(s=>s.classList.remove('active'));
+    const turnos={desayuno:'Desayuno',cambio:'Cambio de franja (12 pm)',cierre:'Cierre'};
+    const barras={salon:'Salón',mezanine:'Mezzanine'};
+    const now=new Date();
+    const tk=barraActual+'-'+(turnoActual==='desayuno'?'des':turnoActual==='cambio'?'cam':'cie');
+    const propina=document.getElementById('pt-'+tk).textContent;
+    document.getElementById('success-detalle').innerHTML='<strong>Internacional · '+barras[barraActual]+'</strong><br>'+sup+'<br>'+turnos[turnoActual]+' · '+now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'})+'<br>'+now.toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+'<br><br>💰 Propina registrada: <strong>'+propina+'</strong>';
+    document.getElementById('success').style.display='block';
+    window.scrollTo({top:0,behavior:'smooth'});
+  },900);
+}
+</script>
+</body>
+</html>
