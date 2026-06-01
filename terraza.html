@@ -216,11 +216,28 @@ function enviar(){
   if(!sup){alert('Escribe tu nombre.');return}
   if(!turnoActual){alert('Selecciona el turno.');return}
   const btn=document.getElementById('btn-enviar');btn.disabled=true;btn.textContent='Registrando…';
+  const now=new Date();
+  const t=turnoActual==='desayuno'?'des':turnoActual==='cambio'?'cam':'cie';
+  const propina_a=parseFloat(document.getElementById('pp-'+t+'-a').value)||0;
+  const propina_b=parseFloat(document.getElementById('pp-'+t+'-b').value)||0;
+  const comentarios=turnoActual==='desayuno'?(document.getElementById('c-des').value||''):turnoActual==='cambio'?(document.getElementById('c-cam').value||''):(document.getElementById('c-cie').value||'');
+  const merma=turnoActual==='cambio'?(document.getElementById('merma-cam').value||''):turnoActual==='cierre'?(document.getElementById('merma-cie').value||''):'';
+  const datos={
+    fecha: now.toLocaleString('es-MX'),
+    salon: 'Terraza',
+    area: 'Terraza',
+    supervisor: sup,
+    turno: {desayuno:'Desayuno',cambio:'Cambio de franja (12 pm)',cierre:'Cierre'}[turnoActual],
+    comentarios: comentarios,
+    merma: merma,
+    propina_a: propina_a,
+    propina_b: propina_b,
+    propina_total: propina_a+propina_b
+  };
+  fetch("https://script.google.com/macros/s/AKfycbwrXtkbXxEU-J3ds52g8ydP_GLgVEJCxMlFNtLY5Gc5U6fQ4UymPVkPEoGTmfoA8nI/exec", {method:"POST",mode:"no-cors",headers:{"Content-Type":"application/json"},body:JSON.stringify(datos)});
   setTimeout(()=>{
     ['card-sup','card-turno','bloque-desayuno','bloque-cambio','bloque-cierre','wrap-btn'].forEach(id=>document.getElementById(id).classList.add('hidden'));
     const turnos={desayuno:'Desayuno',cambio:'Cambio de franja (12 pm)',cierre:'Cierre'};
-    const now=new Date();
-    const t=turnoActual==='desayuno'?'des':turnoActual==='cambio'?'cam':'cie';
     const propina=document.getElementById('pt-'+t).textContent;
     document.getElementById('success-detalle').innerHTML='<strong>Terraza</strong> · '+sup+'<br>'+turnos[turnoActual]+' · '+now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'})+'<br>'+now.toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+'<br><br>💰 Propina registrada: <strong>'+propina+'</strong>';
     document.getElementById('success').style.display='block';

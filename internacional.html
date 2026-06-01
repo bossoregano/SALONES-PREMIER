@@ -335,13 +335,32 @@ function enviar(){
   if(!sup){alert('Escribe tu nombre.');return}
   if(!turnoActual){alert('Selecciona el turno.');return}
   const btn=document.getElementById('btn-enviar');btn.disabled=true;btn.textContent='Registrando…';
+  const now=new Date();
+  const tk=barraActual+'-'+(turnoActual==='desayuno'?'des':turnoActual==='cambio'?'cam':'cie');
+  const propina_a=parseFloat(document.getElementById('pp-'+tk+'-a').value)||0;
+  const propina_b=parseFloat(document.getElementById('pp-'+tk+'-b').value)||0;
+  const barras={salon:'Salón',mezanine:'Mezzanine'};
+  const comentariosId=turnoActual==='desayuno'?'c-'+barraActual.replace('salon','sal').replace('mezanine','mez')+'-des':turnoActual==='cambio'?'c-'+barraActual.replace('salon','sal').replace('mezanine','mez')+'-cam':'c-'+barraActual.replace('salon','sal').replace('mezanine','mez')+'-cie';
+  const mermaId=turnoActual==='cambio'?'merma-'+barraActual.replace('salon','sal').replace('mezanine','mez')+'-cam':turnoActual==='cierre'?'merma-'+barraActual.replace('salon','sal').replace('mezanine','mez')+'-cie':'';
+  const comentariosEl=document.getElementById(comentariosId);
+  const mermaEl=mermaId?document.getElementById(mermaId):null;
+  const datos={
+    fecha: now.toLocaleString('es-MX'),
+    salon: 'Internacional',
+    area: barras[barraActual],
+    supervisor: sup,
+    turno: {desayuno:'Desayuno',cambio:'Cambio de franja (12 pm)',cierre:'Cierre'}[turnoActual],
+    comentarios: comentariosEl?comentariosEl.value:'',
+    merma: mermaEl?mermaEl.value:'',
+    propina_a: propina_a,
+    propina_b: propina_b,
+    propina_total: propina_a+propina_b
+  };
+  fetch("https://script.google.com/macros/s/AKfycbwrXtkbXxEU-J3ds52g8ydP_GLgVEJCxMlFNtLY5Gc5U6fQ4UymPVkPEoGTmfoA8nI/exec", {method:"POST",mode:"no-cors",headers:{"Content-Type":"application/json"},body:JSON.stringify(datos)});
   setTimeout(()=>{
     ['card-sup','card-barra','card-turno','wrap-btn'].forEach(id=>document.getElementById(id).classList.add('hidden'));
     document.querySelectorAll('.barra-section').forEach(s=>s.classList.remove('active'));
     const turnos={desayuno:'Desayuno',cambio:'Cambio de franja (12 pm)',cierre:'Cierre'};
-    const barras={salon:'Salón',mezanine:'Mezzanine'};
-    const now=new Date();
-    const tk=barraActual+'-'+(turnoActual==='desayuno'?'des':turnoActual==='cambio'?'cam':'cie');
     const propina=document.getElementById('pt-'+tk).textContent;
     document.getElementById('success-detalle').innerHTML='<strong>Internacional · '+barras[barraActual]+'</strong><br>'+sup+'<br>'+turnos[turnoActual]+' · '+now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'})+'<br>'+now.toLocaleDateString('es-MX',{weekday:'long',day:'numeric',month:'long',year:'numeric'})+'<br><br>💰 Propina registrada: <strong>'+propina+'</strong>';
     document.getElementById('success').style.display='block';
